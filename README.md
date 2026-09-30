@@ -71,3 +71,174 @@ FIXTRACK/
 │   ├── composer.json
 │   └── composer.lock
 └── README.md
+---
+
+# Requisitos para ejecutar el proyecto
+
+Antes de ejecutar FIXTRACK, es necesario tener instaladas las siguientes herramientas:
+
+- PHP 8.3 o superior
+- Composer
+- MySQL 8
+- Git
+- Un entorno local como WampServer
+- Visual Studio Code o cualquier editor compatible
+
+---
+
+# Instalación del proyecto
+
+## 1. Clonar el repositorio
+
+Abrir una terminal y ejecutar:
+
+```bash
+git clone https://github.com/Darksentence/FIXTRACK.git
+```
+
+Luego ingresar a la carpeta del proyecto:
+
+```bash
+cd FIXTRACK
+```
+
+## 2. Entrar al proyecto Laravel
+
+La aplicación Laravel se encuentra dentro de la carpeta `src`:
+
+```bash
+cd src
+```
+
+## 3. Instalar las dependencias
+
+Ejecutar:
+
+```bash
+composer install
+```
+
+Composer instalará automáticamente las dependencias definidas en `composer.json` y `composer.lock`.
+
+## 4. Crear el archivo de entorno
+
+El archivo `.env` contiene la configuración local de cada equipo y no se almacena en el repositorio.
+
+Crear el archivo `.env` utilizando `.env.example` como base.
+
+En Windows se puede ejecutar:
+
+```bash
+copy .env.example .env
+```
+
+## 5. Generar la clave de Laravel
+
+Ejecutar:
+
+```bash
+php artisan key:generate
+```
+
+Laravel generará automáticamente la clave de la aplicación dentro del archivo `.env`.
+
+---
+
+# Configuración de MySQL
+
+Cada integrante deberá configurar en su archivo `.env` los parámetros correspondientes a su entorno local.
+
+Ejemplo:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=fixtrack
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+La contraseña y demás parámetros pueden variar según la configuración de MySQL de cada integrante.
+
+El archivo `.env` no debe subirse al repositorio.
+
+---
+
+# Base de datos
+
+La conexión del proyecto Laravel con MySQL se encuentra preparada para el desarrollo de la aplicación.
+
+Las migraciones incluidas actualmente corresponden a la estructura base proporcionada por Laravel.
+
+Las tablas, relaciones, migraciones y lógica de persistencia propias de FIXTRACK serán desarrolladas durante la implementación de los módulos correspondientes de la Fase 2.
+
+---
+
+# Ejecutar el proyecto
+
+Con MySQL iniciado y estando dentro de la carpeta `src`, ejecutar:
+
+```bash
+php artisan serve
+```
+
+Laravel iniciará el servidor local de desarrollo.
+
+Por defecto estará disponible en:
+
+```text
+http://127.0.0.1:8000
+```
+
+Abrir esa dirección en el navegador para acceder al proyecto.
+
+Para detener el servidor se puede utilizar:
+
+```text
+Ctrl + C
+```
+
+---
+
+# Comandos útiles
+
+Instalar dependencias:
+
+```bash
+composer install
+```
+
+Limpiar la configuración almacenada en caché:
+
+```bash
+php artisan config:clear
+```
+
+Iniciar el servidor:
+
+```bash
+php artisan serve
+```
+
+Consultar las rutas registradas:
+
+```bash
+php artisan route:list
+```
+
+---
+
+# Estado actual del proyecto
+
+La configuración base para el desarrollo de la Fase 2 se encuentra preparada:
+
+- Proyecto Laravel creado.
+- Dependencias administradas mediante Composer.
+- Estructura MVC de Laravel disponible.
+- Configuración de entorno mediante `.env`.
+- Conexión con MySQL preparada y comprobada.
+- Código fuente integrado dentro de `src/`.
+- Repositorio Git configurado para el trabajo colaborativo.
+
+A partir de esta base pueden desarrollarse los módulos, controladores, modelos, rutas, servicios, autenticación, migraciones y operaciones CRUD correspondientes a FIXTRACK.
