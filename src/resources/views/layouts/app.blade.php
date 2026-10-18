@@ -104,6 +104,8 @@
             <nav class="nav" aria-label="Navegación principal">
                 <a href="{{ route('panel') }}">Panel</a>
                 @if(auth()->user()->tieneRol(\App\Enums\Rol::Admin, \App\Enums\Rol::Tecnico))
+                    <a href="{{ route('clients.index') }}">Clientes</a>
+                    <a href="{{ route('equipments.index') }}">Equipos</a>
                     <a href="{{ route('orders.index') }}">Órdenes</a>
                     <a href="{{ route('orders.create') }}">Nueva orden</a>
                 @endif
@@ -121,6 +123,10 @@
     <main class="container">
         @if(session('success'))
             <div class="flash" role="status">{{ session('success') }}</div>
+        @endif
+
+        @if(session('error'))
+            <div class="errors" role="alert">{{ session('error') }}</div>
         @endif
 
         @if($errors->any())

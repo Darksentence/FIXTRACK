@@ -44,4 +44,17 @@
             </div>
         </section>
     </div>
+
+    @if(auth()->user()->tieneRol(\App\Enums\Rol::Admin, \App\Enums\Rol::Tecnico))
+        <div class="two-columns" style="margin-top: 1rem;">
+            <section class="card">
+                <div class="card-header"><h2>Clientes</h2><a class="button button-secondary button-small" href="{{ route('clients.index') }}">Gestionar</a></div>
+                <div class="card-body"><p class="muted">Registra y actualiza la información de las personas que dejan equipos en el taller.</p></div>
+            </section>
+            <section class="card">
+                <div class="card-header"><h2>Equipos</h2><a class="button button-secondary button-small" href="{{ route('equipments.index') }}">Gestionar</a></div>
+                <div class="card-body"><p class="muted">Asocia laptops, consolas y periféricos a sus clientes antes de crear una orden.</p></div>
+            </section>
+        </div>
+    @endif
 @endsection

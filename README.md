@@ -245,7 +245,7 @@ A partir de esta base pueden desarrollarse los módulos, controladores, modelos,
 
 ## Implementación local de Fase 2
 
-La rama local `fase2-completa-local` contiene el incremento funcional de órdenes de servicio. Incluye el CRUD, filtros, vista detallada, historial de estados, control de roles, validación de integridad entre cliente y equipo, datos de demostración y pruebas automatizadas.
+La rama local `fase2-completa-local` contiene el incremento funcional de clientes, equipos y órdenes de servicio. Incluye CRUD, filtros, vista detallada, historial de estados, control de roles, validación de integridad entre cliente y equipo, datos de demostración y pruebas automatizadas.
 
 Para ejecutar la copia local rápidamente, entrar a `src/` y ejecutar:
 

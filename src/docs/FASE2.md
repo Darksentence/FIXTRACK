@@ -6,7 +6,7 @@ La aplicación Laravel incluye ahora el flujo operativo principal de órdenes de
 
 - autenticación con roles `admin`, `tecnico` y `cliente`;
 - migraciones y relaciones de clientes, equipos, órdenes, diagnósticos, reparaciones e historial;
-- CRUD de órdenes para administración y técnicos;
+- CRUD de clientes, equipos y órdenes para administración y técnicos;
 - búsqueda por código, cliente, marca, modelo o número de serie;
 - filtros por estado y prioridad;
 - vista detallada con costos, equipo, diagnóstico, reparación e historial;

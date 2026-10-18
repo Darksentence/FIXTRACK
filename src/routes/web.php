@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +26,32 @@ Route::middleware('auth')->group(function () {
 
     // Las órdenes contienen información operativa y solo las gestionan admin/técnico.
     Route::middleware('role:admin,tecnico')->group(function () {
+        Route::get('/clientes', [ClientController::class, 'index'])->name('clients.index');
+        Route::get('/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
+        Route::post('/clientes', [ClientController::class, 'store'])->name('clients.store');
+        Route::get('/clientes/{client}/editar', [ClientController::class, 'edit'])
+            ->whereNumber('client')
+            ->name('clients.edit');
+        Route::put('/clientes/{client}', [ClientController::class, 'update'])
+            ->whereNumber('client')
+            ->name('clients.update');
+        Route::delete('/clientes/{client}', [ClientController::class, 'destroy'])
+            ->whereNumber('client')
+            ->name('clients.destroy');
+
+        Route::get('/equipos', [EquipmentController::class, 'index'])->name('equipments.index');
+        Route::get('/equipos/crear', [EquipmentController::class, 'create'])->name('equipments.create');
+        Route::post('/equipos', [EquipmentController::class, 'store'])->name('equipments.store');
+        Route::get('/equipos/{equipment}/editar', [EquipmentController::class, 'edit'])
+            ->whereNumber('equipment')
+            ->name('equipments.edit');
+        Route::put('/equipos/{equipment}', [EquipmentController::class, 'update'])
+            ->whereNumber('equipment')
+            ->name('equipments.update');
+        Route::delete('/equipos/{equipment}', [EquipmentController::class, 'destroy'])
+            ->whereNumber('equipment')
+            ->name('equipments.destroy');
+
         Route::get('/ordenes', [TicketController::class, 'index'])->name('orders.index');
         Route::get('/ordenes/crear', [TicketController::class, 'create'])->name('orders.create');
         Route::post('/ordenes', [TicketController::class, 'store'])->name('orders.store');
