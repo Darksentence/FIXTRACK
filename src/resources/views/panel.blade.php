@@ -1,32 +1,47 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Panel · FIXTRACK</title>
-    <style>
-        * { box-sizing: border-box; }
-        body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
-               font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; background: #f3f4f6; color: #111827; }
-        .card { width: 100%; max-width: 420px; margin: 1rem; padding: 2rem; background: #fff;
-                border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.08); }
-        h1 { margin: 0 0 .5rem; font-size: 1.4rem; }
-        .rol { display: inline-block; margin-bottom: 1.5rem; padding: .2rem .6rem; border-radius: 999px;
-               background: #dbeafe; color: #1e40af; font-size: .8rem; font-weight: 600; }
-        button { padding: .6rem 1.2rem; border: 0; border-radius: 8px; background: #374151;
-                 color: #fff; font-size: .95rem; cursor: pointer; }
-        button:hover { background: #111827; }
-    </style>
-</head>
-<body>
-    <main class="card">
-        <h1>Hola, {{ auth()->user()->name }}</h1>
-        <span class="rol">{{ auth()->user()->role?->etiqueta() }}</span>
+@extends('layouts.app')
 
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit">Cerrar sesión</button>
-        </form>
-    </main>
-</body>
-</html>
+@section('title', 'Panel · FIXTRACK')
+
+@section('content')
+    <div class="page-heading">
+        <div>
+            <p class="eyebrow">Área de trabajo</p>
+            <h1>Hola, {{ auth()->user()->name }}</h1>
+            <p class="muted">Administra el seguimiento de los servicios del taller desde un solo lugar.</p>
+        </div>
+        <span class="badge badge-blue">{{ auth()->user()->role?->etiqueta() }}</span>
+    </div>
+
+    <div class="two-columns">
+        <section class="card">
+            <div class="card-header">
+                <div>
+                    <p class="eyebrow">Fase 2</p>
+                    <h2>Órdenes de servicio</h2>
+                </div>
+                @if(auth()->user()->tieneRol(\App\Enums\Rol::Admin, \App\Enums\Rol::Tecnico))
+                    <a class="button button-primary" href="{{ route('orders.index') }}">Ver órdenes</a>
+                @endif
+            </div>
+            <div class="card-body">
+                <p class="muted">Consulta tickets, filtra por estado o prioridad, registra nuevas órdenes y actualiza su flujo operativo.</p>
+                @if(auth()->user()->tieneRol(\App\Enums\Rol::Admin, \App\Enums\Rol::Tecnico))
+                    <a class="button button-secondary" href="{{ route('orders.create') }}">Registrar una orden</a>
+                @else
+                    <p class="note">El acceso de cliente está preparado para la siguiente iteración. Por ahora las órdenes son gestionadas por administración y técnicos.</p>
+                @endif
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-header"><h2>Acceso actual</h2></div>
+            <div class="card-body">
+                <dl class="detail-grid">
+                    <div class="detail"><dt>Usuario</dt><dd>{{ auth()->user()->email }}</dd></div>
+                    <div class="detail"><dt>Rol</dt><dd>{{ auth()->user()->role?->etiqueta() }}</dd></div>
+                </dl>
+                <p class="note" style="margin-top: 1rem;">Las acciones de creación, edición, eliminación y cambio de estado requieren rol de administrador o técnico.</p>
+            </div>
+        </section>
+    </div>
+@endsection

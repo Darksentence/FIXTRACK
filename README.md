@@ -242,3 +242,21 @@ La configuración base para el desarrollo de la Fase 2 se encuentra preparada:
 - Repositorio Git configurado para el trabajo colaborativo.
 
 A partir de esta base pueden desarrollarse los módulos, controladores, modelos, rutas, servicios, autenticación, migraciones y operaciones CRUD correspondientes a FIXTRACK.
+
+## Implementación local de Fase 2
+
+La rama local `fase2-completa-local` contiene el incremento funcional de órdenes de servicio. Incluye el CRUD, filtros, vista detallada, historial de estados, control de roles, validación de integridad entre cliente y equipo, datos de demostración y pruebas automatizadas.
+
+Para ejecutar la copia local rápidamente, entrar a `src/` y ejecutar:
+
+```bash
+composer install
+copy .env.example .env
+php artisan key:generate
+php artisan migrate:fresh --seed
+php artisan serve
+```
+
+Abrir `http://127.0.0.1:8000` y entrar con `tecnico@fixtrack.test` o `admin@fixtrack.test`. La contraseña de demostración es `Fixtrack123*`.
+
+La documentación detallada del alcance y los comandos está en [`src/docs/FASE2.md`](src/docs/FASE2.md).

@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\EstadoTicket;
+use App\Enums\PrioridadTicket;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ServiceOrder extends Model
 {
@@ -18,6 +20,7 @@ class ServiceOrder extends Model
         'service_type',
         'reported_problem',
         'status',
+        'priority',
         'authorization_status',
         'authorized_at',
         'estimated_cost',
@@ -34,6 +37,8 @@ class ServiceOrder extends Model
         'delivered_at' => 'datetime',
         'estimated_cost' => 'decimal:2',
         'final_cost' => 'decimal:2',
+        'status' => EstadoTicket::class,
+        'priority' => PrioridadTicket::class,
     ];
 
     // Cada orden pertenece a un cliente.
