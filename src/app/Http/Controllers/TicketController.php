@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Enums\EstadoTicket;
 use App\Enums\PrioridadTicket;
 use App\Http\Requests\ChangeServiceOrderStatusRequest;
+use App\Http\Requests\SaveDiagnosisRequest;
+use App\Http\Requests\SaveRepairRequest;
 use App\Http\Requests\StoreServiceOrderRequest;
 use App\Http\Requests\UpdateServiceOrderRequest;
 use App\Models\Client;
@@ -109,6 +111,30 @@ class TicketController extends Controller
         return redirect()
             ->route('orders.show', $serviceOrder)
             ->with('success', 'El estado de la orden fue actualizado.');
+    }
+
+    public function saveDiagnosis(
+        SaveDiagnosisRequest $request,
+        ServiceOrder $serviceOrder,
+        TicketService $ticketService,
+    ): RedirectResponse {
+        $ticketService->saveDiagnosis($serviceOrder, $request->validated(), $request->user());
+
+        return redirect()
+            ->route('orders.show', $serviceOrder)
+            ->with('success', 'El diagnóstico fue guardado.');
+    }
+
+    public function saveRepair(
+        SaveRepairRequest $request,
+        ServiceOrder $serviceOrder,
+        TicketService $ticketService,
+    ): RedirectResponse {
+        $ticketService->saveRepair($serviceOrder, $request->validated(), $request->user());
+
+        return redirect()
+            ->route('orders.show', $serviceOrder)
+            ->with('success', 'La reparación fue guardada.');
     }
 
     /**

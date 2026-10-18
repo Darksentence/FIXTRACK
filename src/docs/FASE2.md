@@ -10,6 +10,7 @@ La aplicación Laravel incluye ahora el flujo operativo principal de órdenes de
 - búsqueda por código, cliente, marca, modelo o número de serie;
 - filtros por estado y prioridad;
 - vista detallada con costos, equipo, diagnóstico, reparación e historial;
+- captura y edición de diagnóstico y reparación desde la vista de la orden;
 - transiciones de estado controladas por reglas de negocio;
 - registro automático de cada cambio en `order_histories`;
 - validación de que el equipo pertenece al cliente seleccionado;

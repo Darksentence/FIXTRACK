@@ -115,6 +115,53 @@ class TicketService
         });
     }
 
+    public function saveDiagnosis(ServiceOrder $order, array $data, User $actor): ServiceOrder
+    {
+        return $this->database->transaction(function () use ($order, $data, $actor): ServiceOrder {
+            $order->diagnosis()->updateOrCreate([], [
+                ...$data,
+                'diagnosed_at' => now(),
+            ]);
+
+            $order->refresh();
+
+            if ($order->status === EstadoTicket::PendienteDiagnostico) {
+                $order = $this->changeStatus(
+                    $order,
+                    EstadoTicket::EsperandoAutorizacion,
+                    'Diagnóstico registrado y pendiente de autorización.',
+                    $actor,
+                );
+            }
+
+            return $order->fresh(['client', 'equipment', 'diagnosis', 'repair', 'histories.user']);
+        });
+    }
+
+    public function saveRepair(ServiceOrder $order, array $data, User $actor): ServiceOrder
+    {
+        return $this->database->transaction(function () use ($order, $data, $actor): ServiceOrder {
+            $order->repair()->updateOrCreate([], [
+                ...$data,
+                'started_at' => $data['started_at'] ?? null,
+                'completed_at' => $data['completed_at'] ?? null,
+            ]);
+
+            $order->refresh();
+
+            if ($order->status === EstadoTicket::Autorizado) {
+                $order = $this->changeStatus(
+                    $order,
+                    EstadoTicket::EnReparacion,
+                    'Trabajo de reparación iniciado.',
+                    $actor,
+                );
+            }
+
+            return $order->fresh(['client', 'equipment', 'diagnosis', 'repair', 'histories.user']);
+        });
+    }
+
     public function changeStatus(
         ServiceOrder $order,
         EstadoTicket|string $newStatus,

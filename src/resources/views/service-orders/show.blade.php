@@ -41,20 +41,31 @@
             <section class="card">
                 <div class="card-header"><h2>Diagnóstico y reparación</h2></div>
                 <div class="card-body">
-                    @if($order->diagnosis)
-                        <div class="detail"><dt>Diagnóstico</dt><dd>{{ $order->diagnosis->diagnosis }}</dd></div>
-                        @if($order->diagnosis->proposed_solution)
-                            <p class="note" style="margin-top: .75rem;">Solución propuesta: {{ $order->diagnosis->proposed_solution }}</p>
-                        @endif
-                    @else
-                        <p class="muted">Todavía no hay diagnóstico registrado.</p>
-                    @endif
+                    <form method="POST" action="{{ route('orders.diagnosis', $order) }}">
+                        @csrf
+                        <h3 style="margin: 0 0 .8rem;">{{ $order->diagnosis ? 'Editar diagnóstico' : 'Registrar diagnóstico' }}</h3>
+                        <div class="field"><label for="diagnosis">Diagnóstico *</label><textarea id="diagnosis" name="diagnosis" required>{{ old('diagnosis', $order->diagnosis?->diagnosis ?? '') }}</textarea></div>
+                        <div class="form-grid" style="margin-top: .8rem;">
+                            <div class="field"><label for="proposed_solution">Solución propuesta</label><textarea id="proposed_solution" name="proposed_solution" style="min-height: 90px;">{{ old('proposed_solution', $order->diagnosis?->proposed_solution ?? '') }}</textarea></div>
+                            <div class="field"><label for="diagnosis_observations">Observaciones</label><textarea id="diagnosis_observations" name="observations" style="min-height: 90px;">{{ old('observations', $order->diagnosis?->observations ?? '') }}</textarea></div>
+                        </div>
+                        <button class="button-primary" style="margin-top: .8rem;" type="submit">Guardar diagnóstico</button>
+                    </form>
 
-                    @if($order->repair)
-                        <div class="detail" style="margin-top: 1rem;"><dt>Trabajo realizado</dt><dd>{{ $order->repair->performed_work }}</dd></div>
-                    @else
-                        <p class="muted" style="margin-top: 1rem;">Todavía no hay reparación registrada.</p>
-                    @endif
+                    <hr style="border: 0; border-top: 1px solid var(--line); margin: 1.5rem 0;">
+
+                    <form method="POST" action="{{ route('orders.repair', $order) }}">
+                        @csrf
+                        <h3 style="margin: 0 0 .8rem;">{{ $order->repair ? 'Editar reparación' : 'Registrar reparación' }}</h3>
+                        <div class="field"><label for="performed_work">Trabajo realizado *</label><textarea id="performed_work" name="performed_work" required>{{ old('performed_work', $order->repair?->performed_work ?? '') }}</textarea></div>
+                        <div class="form-grid" style="margin-top: .8rem;">
+                            <div class="field"><label for="parts_used">Repuestos utilizados</label><textarea id="parts_used" name="parts_used" style="min-height: 90px;">{{ old('parts_used', $order->repair?->parts_used ?? '') }}</textarea></div>
+                            <div class="field"><label for="repair_observations">Observaciones</label><textarea id="repair_observations" name="observations" style="min-height: 90px;">{{ old('observations', $order->repair?->observations ?? '') }}</textarea></div>
+                            <div class="field"><label for="started_at">Inicio</label><input id="started_at" type="datetime-local" name="started_at" value="{{ old('started_at', $order->repair?->started_at?->format('Y-m-d\\TH:i') ?? '') }}"></div>
+                            <div class="field"><label for="completed_at">Finalización</label><input id="completed_at" type="datetime-local" name="completed_at" value="{{ old('completed_at', $order->repair?->completed_at?->format('Y-m-d\\TH:i') ?? '') }}"></div>
+                        </div>
+                        <button class="button-primary" style="margin-top: .8rem;" type="submit">Guardar reparación</button>
+                    </form>
                 </div>
             </section>
         </div>

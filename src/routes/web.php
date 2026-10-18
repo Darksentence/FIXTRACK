@@ -70,6 +70,12 @@ Route::middleware('auth')->group(function () {
         Route::patch('/ordenes/{serviceOrder}/estado', [TicketController::class, 'changeStatus'])
             ->whereNumber('serviceOrder')
             ->name('orders.status');
+        Route::post('/ordenes/{serviceOrder}/diagnostico', [TicketController::class, 'saveDiagnosis'])
+            ->whereNumber('serviceOrder')
+            ->name('orders.diagnosis');
+        Route::post('/ordenes/{serviceOrder}/reparacion', [TicketController::class, 'saveRepair'])
+            ->whereNumber('serviceOrder')
+            ->name('orders.repair');
     });
 });
 

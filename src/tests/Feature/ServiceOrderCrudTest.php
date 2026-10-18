@@ -110,6 +110,55 @@ class ServiceOrderCrudTest extends TestCase
         ]);
     }
 
+    public function test_tecnico_puede_guardar_diagnostico_y_reparacion(): void
+    {
+        $technician = User::factory()->tecnico()->create();
+        [$client, $equipment] = $this->clientWithEquipment();
+        $order = ServiceOrder::create([
+            'order_code' => 'A-0100',
+            'client_id' => $client->id,
+            'equipment_id' => $equipment->id,
+            'service_type' => 'repair',
+            'reported_problem' => 'Falla de prueba.',
+            'status' => EstadoTicket::PendienteDiagnostico,
+            'priority' => 'medium',
+            'authorization_status' => 'pending',
+        ]);
+
+        $this->actingAs($technician)
+            ->post(route('orders.diagnosis', $order), [
+                'diagnosis' => 'Falla en la fuente de poder.',
+                'proposed_solution' => 'Reemplazar componente.',
+            ])
+            ->assertRedirect(route('orders.show', $order));
+
+        $order->update([
+            'status' => EstadoTicket::Autorizado,
+            'authorization_status' => 'authorized',
+        ]);
+
+        $this->actingAs($technician)
+            ->post(route('orders.repair', $order), [
+                'performed_work' => 'Se reemplazó la fuente y se hicieron pruebas.',
+                'parts_used' => 'Fuente compatible.',
+                'started_at' => '2026-10-18 10:00',
+            ])
+            ->assertRedirect(route('orders.show', $order));
+
+        $this->assertDatabaseHas('diagnoses', [
+            'service_order_id' => $order->id,
+            'diagnosis' => 'Falla en la fuente de poder.',
+        ]);
+        $this->assertDatabaseHas('repairs', [
+            'service_order_id' => $order->id,
+            'performed_work' => 'Se reemplazó la fuente y se hicieron pruebas.',
+        ]);
+        $this->assertDatabaseHas('service_orders', [
+            'id' => $order->id,
+            'status' => EstadoTicket::EnReparacion->value,
+        ]);
+    }
+
     public function test_un_cliente_no_puede_entrar_al_crud_de_ordenes(): void
     {
         $clientUser = User::factory()->cliente()->create();
