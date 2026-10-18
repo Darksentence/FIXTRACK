@@ -32,7 +32,6 @@
                         <div class="detail"><dt>Tipo de servicio</dt><dd>{{ $order->service_type === 'repair' ? 'Reparación' : 'Mantenimiento' }}</dd></div>
                         <div class="detail"><dt>Recibido</dt><dd>{{ $order->received_at?->format('d/m/Y H:i') ?? '—' }}</dd></div>
                         <div class="detail"><dt>Costo estimado</dt><dd>{{ $order->estimated_cost !== null ? '$'.number_format((float) $order->estimated_cost, 2) : 'Pendiente' }}</dd></div>
-                        <div class="detail"><dt>Costo final</dt><dd>{{ $order->final_cost !== null ? '$'.number_format((float) $order->final_cost, 2) : 'Pendiente' }}</dd></div>
                     </dl>
                     <div class="detail" style="margin-top: 1rem;"><dt>Problema reportado</dt><dd>{{ $order->reported_problem }}</dd></div>
                 </div>
@@ -63,6 +62,7 @@
                             <div class="field"><label for="repair_observations">Observaciones</label><textarea id="repair_observations" name="observations" style="min-height: 90px;">{{ old('observations', $order->repair?->observations ?? '') }}</textarea></div>
                             <div class="field"><label for="started_at">Inicio</label><input id="started_at" type="datetime-local" name="started_at" value="{{ old('started_at', $order->repair?->started_at?->format('Y-m-d\\TH:i') ?? '') }}"></div>
                             <div class="field"><label for="completed_at">Finalización</label><input id="completed_at" type="datetime-local" name="completed_at" value="{{ old('completed_at', $order->repair?->completed_at?->format('Y-m-d\\TH:i') ?? '') }}"></div>
+                            <div class="field"><label for="final_cost">Costo final del servicio</label><input id="final_cost" type="number" name="final_cost" min="0" max="99999999.99" step="0.01" value="{{ old('final_cost', $order->final_cost ?? '') }}" placeholder="Se define al terminar el trabajo"></div>
                         </div>
                         <button class="button-primary" style="margin-top: .8rem;" type="submit">Guardar reparación</button>
                     </form>

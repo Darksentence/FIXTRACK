@@ -51,16 +51,13 @@
         <input id="estimated_cost" type="number" name="estimated_cost" min="0" step="0.01" value="{{ old('estimated_cost', $order->estimated_cost ?? '') }}" placeholder="0.00">
     </div>
 
-    <div class="field">
-        <label for="final_cost">Costo final</label>
-        <input id="final_cost" type="number" name="final_cost" min="0" step="0.01" value="{{ old('final_cost', $order->final_cost ?? '') }}" placeholder="0.00">
-    </div>
-
     <div class="field full">
         <label for="reported_problem">Problema reportado *</label>
         <textarea id="reported_problem" name="reported_problem" required maxlength="5000" placeholder="Describe la falla o el mantenimiento solicitado">{{ old('reported_problem', $order->reported_problem ?? '') }}</textarea>
     </div>
 </div>
+
+<p class="note" style="margin-top: 1rem;">El costo final se registrará al guardar la reparación, después del diagnóstico.</p>
 
 <div class="form-actions">
     <a class="button button-secondary" href="{{ $editing ? route('orders.show', $order) : route('orders.index') }}">Cancelar</a>

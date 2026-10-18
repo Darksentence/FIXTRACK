@@ -28,7 +28,6 @@ class UpdateServiceOrderRequest extends FormRequest
             'reported_problem' => ['required', 'string', 'max:5000'],
             'priority' => ['required', Rule::in(array_column(PrioridadTicket::cases(), 'value'))],
             'estimated_cost' => ['nullable', 'numeric', 'min:0', 'max:99999999.99'],
-            'final_cost' => ['nullable', 'numeric', 'min:0', 'max:99999999.99'],
         ];
     }
 

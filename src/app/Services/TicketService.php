@@ -141,11 +141,20 @@ class TicketService
     public function saveRepair(ServiceOrder $order, array $data, User $actor): ServiceOrder
     {
         return $this->database->transaction(function () use ($order, $data, $actor): ServiceOrder {
+            $hasFinalCost = array_key_exists('final_cost', $data);
+            $finalCost = $data['final_cost'] ?? null;
+            unset($data['final_cost']);
+
             $order->repair()->updateOrCreate([], [
                 ...$data,
                 'started_at' => $data['started_at'] ?? null,
                 'completed_at' => $data['completed_at'] ?? null,
             ]);
+
+            if ($hasFinalCost) {
+                $order->final_cost = $finalCost;
+                $order->save();
+            }
 
             $order->refresh();
 
