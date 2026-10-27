@@ -47,7 +47,7 @@
         .container { max-width: 1180px; margin: 0 auto; padding: 1.8rem 1.25rem 3rem; }
         .page-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 1.15rem; padding-bottom: .95rem; border-bottom: 1px solid #d0ccc1; }
         h1 { margin: 0; font-size: clamp(1.6rem, 3vw, 2.05rem); font-weight: 700; letter-spacing: -.045em; }
-        h2 { margin: 0; font-size: 1.15rem; font-weight: 700; letter-spacing: -.02em; }
+        h2 { margin: 0; font-size: 1.15rem; font-weight: 700; }
         h3 { font-size: 1rem; font-weight: 700; }
         .eyebrow { margin: 0 0 .35rem; color: var(--primary); font-size: .72rem; font-weight: 700; letter-spacing: .045em; text-transform: none; }
         .muted { color: var(--muted); }
@@ -82,7 +82,7 @@
         .pagination-links { display: flex; gap: .4rem; }
         .detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
         .detail { padding: .85rem; background: var(--soft); border-left: 2px solid #c8c1b2; }
-        .detail dt { color: var(--muted); font-size: .72rem; font-weight: 700; text-transform: none; letter-spacing: .01em; }
+        .detail dt { color: var(--muted); font-size: .72rem; font-weight: 700; text-transform: none; }
         .detail dd { margin: .3rem 0 0; font-weight: 600; overflow-wrap: anywhere; }
         .two-columns { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr); gap: .85rem; align-items: start; }
         .stack { display: grid; gap: 1rem; }
@@ -121,6 +121,11 @@
             .filters { padding: .75rem; }
         }
     </style>
+
+    {{-- FASE 3 - PARTE 1: Integración de estilos complementarios.
+         Conservamos los estilos y la estructura creados por el equipo.
+         Este archivo CSS mejora la navegación adaptable y la accesibilidad. --}}
+    <link rel="stylesheet" href="{{ asset('css/fase3-integracion.css') }}">
 </head>
 <body>
     <header class="topbar">
