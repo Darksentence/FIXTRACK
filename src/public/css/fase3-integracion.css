@@ -5,8 +5,51 @@
  * Este archivo complementa los estilos existentes.
  */
 
+/* Evita que los contenedores y las cuadrículas amplíen la página. */
+.topbar-inner,
+.container,
+.card,
+.card-body,
+.filters,
+.table-wrap {
+    min-width: 0;
+}
+
+.container,
+.topbar-inner {
+    width: 100%;
+}
+
+/* Mantiene las tablas dentro de su contenedor desplazable. */
+.table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/*
+ * Evita que los botones de las tablas se compriman
+ * y partan sus palabras en pantallas pequeñas.
+ */
+.table-wrap .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.4rem;
+}
+
+.table-wrap .actions .button,
+.table-wrap .actions button {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.table-wrap .actions form {
+    flex-shrink: 0;
+}
+
 /* Mejora la navegación en tabletas y pantallas pequeñas. */
-@media (max-width: 850px) {
+@media (max-width: 1100px) {
     .topbar-inner {
         flex-wrap: wrap;
     }
@@ -29,15 +72,42 @@
     }
 }
 
-/* Evita que los enlaces se amontonen en celulares. */
+/* Distribuye los filtros en una columna en pantallas pequeñas. */
+@media (max-width: 850px) {
+    .filters {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    .filters > * {
+        min-width: 0;
+    }
+
+    .filters .field,
+    .filters input,
+    .filters select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .page-heading {
+        flex-wrap: wrap;
+    }
+}
+
+/* Adaptación específica para celulares. */
 @media (max-width: 560px) {
     .topbar-inner {
         gap: 0.75rem;
     }
 
+    .brand {
+        min-width: 0;
+    }
+
     .nav {
         flex-wrap: nowrap;
         overflow-x: auto;
+        max-width: 100%;
         padding-bottom: 0.25rem;
     }
 
@@ -52,11 +122,16 @@
         justify-content: space-between;
     }
 
-    .card-header {
+    .card-header,
+    .form-actions {
         flex-wrap: wrap;
     }
 
-    .form-actions {
+    .page-heading > * {
+        min-width: 0;
+    }
+
+    .pagination {
         flex-wrap: wrap;
     }
 }
