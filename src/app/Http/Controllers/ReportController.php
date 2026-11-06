@@ -1,11 +1,15 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Enums\EstadoTicket;
 use App\Enums\PrioridadTicket;
 use App\Models\ServiceOrder;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use App\Exports\ServiceOrdersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
@@ -80,4 +84,50 @@ class ReportController extends Controller
             'orders_by_service' => $ordersByService,
         ]);
     }
+
+    public function exportPdf()
+    {
+        // Consultar las órdenes registradas.
+        $orders = ServiceOrder::query()
+            ->orderByDesc('created_at')
+            ->get();
+
+        // Calcular indicadores para el documento.
+        $totalOrders = $orders->count();
+
+        $deliveredOrders = $orders->filter(
+            fn ($order) => $order->status === EstadoTicket::Entregado
+        )->count();
+
+        $inRepairOrders = $orders->filter(
+            fn ($order) => $order->status === EstadoTicket::EnReparacion
+        )->count();
+
+        $totalFinalCost = $orders->filter(
+            fn ($order) => $order->status === EstadoTicket::Entregado
+        )->sum('final_cost');
+
+        // Generar PDF a partir de una vista Blade.
+        $pdf = Pdf::loadView('reports.pdf', [
+            'orders' => $orders,
+            'totalOrders' => $totalOrders,
+            'deliveredOrders' => $deliveredOrders,
+            'inRepairOrders' => $inRepairOrders,
+            'totalFinalCost' => $totalFinalCost,
+            'generatedAt' => now(),
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->download(
+            'FIXTRACK_Reporte_' . now()->format('Y-m-d_H-i-s') . '.pdf'
+        );
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(
+            new ServiceOrdersExport(),
+            'FIXTRACK_Ordenes_' . now()->format('Y-m-d_H-i-s') . '.xlsx'
+        );
+    }
+
 }

@@ -14,7 +14,8 @@ Route::get('/', function () {
 
 // Autenticación (solo invitados)
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::get('/login', [AuthController::class, 'showLogin'])
+        ->name('login');
 
     Route::post('/login', [AuthController::class, 'login'])
         ->middleware('throttle:login')
@@ -23,26 +24,60 @@ Route::middleware('guest')->group(function () {
 
 // Rutas que requieren sesión iniciada
 Route::middleware('auth')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::view('/panel', 'panel')->name('panel');
+    Route::post('/logout', [AuthController::class, 'logout'])
+        ->name('logout');
 
-    // PARTE 4 - SPRINT III: REPORTES Y ESTADÍSTICAS
-    // Acceso exclusivo para administradores.
-    Route::get('/reportes/resumen', [ReportController::class, 'summary'])
-        ->middleware('role:admin')
-        ->name('reports.summary');
+    Route::view('/panel', 'panel')
+        ->name('panel');
 
-    // Las órdenes contienen información operativa
-    // y solo las gestionan admin/técnico.
+    /*
+    |--------------------------------------------------------------------------
+    | PARTE 4 - SPRINT III: REPORTES Y ESTADÍSTICAS
+    |--------------------------------------------------------------------------
+    | Acceso exclusivo para administradores.
+    | Dashboard, estadísticas y exportaciones PDF y Excel.
+    */
+
+    Route::middleware('role:admin')->group(function () {
+
+        // Dashboard de reportes
+        Route::get('/reportes', function () {
+            return view('reports.index');
+        })->name('reports.index');
+
+        // Datos estadísticos en formato JSON
+        Route::get('/reportes/resumen', [ReportController::class, 'summary'])
+            ->name('reports.summary');
+
+        // Exportación de reporte en PDF
+        Route::get('/reportes/pdf', [ReportController::class, 'exportPdf'])
+            ->name('reports.pdf');
+
+        // Exportación de órdenes de servicio en Excel
+        Route::get('/reportes/excel', [ReportController::class, 'exportExcel'])
+            ->name('reports.excel');
+
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | CLIENTES, EQUIPOS Y ÓRDENES DE SERVICIO
+    |--------------------------------------------------------------------------
+    | Información operativa disponible para administradores y técnicos.
+    */
+
     Route::middleware('role:admin,tecnico')->group(function () {
 
         // CLIENTES
-        Route::get('/clientes', [ClientController::class, 'index'])->name('clients.index');
+        Route::get('/clientes', [ClientController::class, 'index'])
+            ->name('clients.index');
 
-        Route::get('/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
+        Route::get('/clientes/crear', [ClientController::class, 'create'])
+            ->name('clients.create');
 
-        Route::post('/clientes', [ClientController::class, 'store'])->name('clients.store');
+        Route::post('/clientes', [ClientController::class, 'store'])
+            ->name('clients.store');
 
         Route::get('/clientes/{client}/editar', [ClientController::class, 'edit'])
             ->whereNumber('client')
@@ -57,11 +92,14 @@ Route::middleware('auth')->group(function () {
             ->name('clients.destroy');
 
         // EQUIPOS
-        Route::get('/equipos', [EquipmentController::class, 'index'])->name('equipments.index');
+        Route::get('/equipos', [EquipmentController::class, 'index'])
+            ->name('equipments.index');
 
-        Route::get('/equipos/crear', [EquipmentController::class, 'create'])->name('equipments.create');
+        Route::get('/equipos/crear', [EquipmentController::class, 'create'])
+            ->name('equipments.create');
 
-        Route::post('/equipos', [EquipmentController::class, 'store'])->name('equipments.store');
+        Route::post('/equipos', [EquipmentController::class, 'store'])
+            ->name('equipments.store');
 
         Route::get('/equipos/{equipment}/editar', [EquipmentController::class, 'edit'])
             ->whereNumber('equipment')
@@ -76,11 +114,14 @@ Route::middleware('auth')->group(function () {
             ->name('equipments.destroy');
 
         // ÓRDENES DE SERVICIO
-        Route::get('/ordenes', [TicketController::class, 'index'])->name('orders.index');
+        Route::get('/ordenes', [TicketController::class, 'index'])
+            ->name('orders.index');
 
-        Route::get('/ordenes/crear', [TicketController::class, 'create'])->name('orders.create');
+        Route::get('/ordenes/crear', [TicketController::class, 'create'])
+            ->name('orders.create');
 
-        Route::post('/ordenes', [TicketController::class, 'store'])->name('orders.store');
+        Route::post('/ordenes', [TicketController::class, 'store'])
+            ->name('orders.store');
 
         Route::get('/ordenes/{serviceOrder}', [TicketController::class, 'show'])
             ->whereNumber('serviceOrder')
@@ -109,6 +150,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/ordenes/{serviceOrder}/reparacion', [TicketController::class, 'saveRepair'])
             ->whereNumber('serviceOrder')
             ->name('orders.repair');
+
     });
 });
 

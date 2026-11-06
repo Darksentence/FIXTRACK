@@ -142,6 +142,12 @@
                     <a class="{{ request()->routeIs('orders.*') && !request()->routeIs('orders.create') ? 'is-active' : '' }}" href="{{ route('orders.index') }}">Órdenes</a>
                     <a class="{{ request()->routeIs('orders.create') ? 'is-active' : '' }}" href="{{ route('orders.create') }}">Nueva orden</a>
                 @endif
+                @if(auth()->user()->tieneRol(\App\Enums\Rol::Admin))
+    <a class="{{ request()->routeIs('reports.*') ? 'is-active' : '' }}"
+       href="{{ route('reports.index') }}">
+        Reportes
+    </a>
+@endif
             </nav>
             <div class="user-area">
                 <span>{{ auth()->user()->name }}</span>
