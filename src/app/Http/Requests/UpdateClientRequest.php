@@ -24,6 +24,12 @@ class UpdateClientRequest extends FormRequest
                 'max:30',
                 Rule::unique('clients', 'client_code')->ignore($client),
             ],
+            'user_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('users', 'id')->where(fn ($query) => $query->where('role', Rol::Cliente->value)),
+                Rule::unique('clients', 'user_id')->ignore($client),
+            ],
             'name' => ['required', 'string', 'max:150'],
             'phone' => ['required', 'string', 'max:30'],
             'email' => ['nullable', 'email', 'max:150'],

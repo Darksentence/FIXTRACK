@@ -142,6 +142,15 @@
                     <a class="{{ request()->routeIs('orders.*') && !request()->routeIs('orders.create') ? 'is-active' : '' }}" href="{{ route('orders.index') }}">Órdenes</a>
                     <a class="{{ request()->routeIs('orders.create') ? 'is-active' : '' }}" href="{{ route('orders.create') }}">Nueva orden</a>
                 @endif
+
+                {{-- FASE 3 - PARTE 2: Integración del portal del cliente.
+                     El enlace se muestra únicamente a usuarios con rol Cliente.
+                     Permite acceder a sus órdenes sin alterar la navegación
+                     existente para Administrador y Técnico.
+                     La ruta client.orders.index se define en routes/web.php. --}}
+                @if(auth()->user()->tieneRol(\App\Enums\Rol::Cliente))
+                    <a class="{{ request()->routeIs('client.orders.*') ? 'is-active' : '' }}" href="{{ route('client.orders.index') }}">Mis órdenes</a>
+                @endif
             </nav>
             <div class="user-area">
                 <span>{{ auth()->user()->name }}</span>

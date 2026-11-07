@@ -234,6 +234,42 @@
                     @endif
                 </div>
             </section>
+
+            <section class="card">
+                <div class="card-header"><h2>Archivos del servicio</h2></div>
+                <div class="card-body">
+                    <form method="POST" action="{{ route('orders.attachments.store', $order) }}" enctype="multipart/form-data">
+                        @csrf
+                        <div class="field">
+                            <label for="staff_file">Cargar imagen o PDF</label>
+                            <input id="staff_file" type="file" name="file" accept=".jpg,.jpeg,.png,.webp,.pdf" required>
+                            <small class="muted">Máximo 10 MB. Se aceptan JPG, PNG, WEBP y PDF.</small>
+                        </div>
+                        <button class="button-primary" style="margin-top: .8rem; width: 100%;" type="submit">Cargar archivo</button>
+                    </form>
+
+                    @if($order->attachments->isNotEmpty())
+                        <hr style="border: 0; border-top: 1px solid var(--line); margin: 1.5rem 0 1rem;">
+                        <div class="stack" style="gap: .6rem;">
+                            @foreach($order->attachments as $attachment)
+                                <div class="detail">
+                                    <div class="actions" style="justify-content: space-between;">
+                                        <a href="{{ route('orders.attachments.view', [$order, $attachment]) }}" target="_blank" rel="noopener">{{ $attachment->original_name }}</a>
+                                        <form class="inline" method="POST" action="{{ route('orders.attachments.destroy', [$order, $attachment]) }}" onsubmit="return confirm('¿Eliminar este archivo?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="button-danger button-small" type="submit">Eliminar</button>
+                                        </form>
+                                    </div>
+                                    <small class="muted">{{ number_format($attachment->size / 1048576, 2) }} MB · {{ $attachment->uploader?->name ?? 'Sistema' }} · {{ $attachment->created_at?->format('d/m/Y H:i') }}</small>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="muted" style="margin-top: 1rem;">Todavía no hay archivos asociados.</p>
+                    @endif
+                </div>
+            </section>
         </div>
 
         <div class="stack">

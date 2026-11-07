@@ -57,6 +57,7 @@ class TicketController extends Controller
             'equipment',
             'diagnosis',
             'repair',
+            'attachments.uploader',
             'histories.user',
         ]);
 
