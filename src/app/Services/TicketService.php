@@ -10,6 +10,7 @@ use App\Models\ServiceOrder;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\DatabaseManager;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class TicketService
@@ -234,7 +235,15 @@ class TicketService
 
     public function delete(ServiceOrder $order): void
     {
-        $this->database->transaction(fn () => $order->delete());
+        $this->database->transaction(function () use ($order): void {
+            $order->loadMissing('attachments');
+
+            foreach ($order->attachments as $attachment) {
+                Storage::disk($attachment->disk)->delete($attachment->path);
+            }
+
+            $order->delete();
+        });
     }
 
     /**

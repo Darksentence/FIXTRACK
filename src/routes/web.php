@@ -1,16 +1,19 @@
-
 <?php
 
-use App\Http\Controllers\ReportController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ClientPortalController;
 use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ServiceOrderAttachmentController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+
 
 // Autenticación (solo invitados)
 Route::middleware('guest')->group(function () {
@@ -151,6 +154,38 @@ Route::middleware('auth')->group(function () {
             ->whereNumber('serviceOrder')
             ->name('orders.repair');
 
+        Route::post('/ordenes/{serviceOrder}/archivos', [ServiceOrderAttachmentController::class, 'store'])
+            ->whereNumber('serviceOrder')
+            ->name('orders.attachments.store');
+
+        Route::get('/ordenes/{serviceOrder}/archivos/{attachment}', [ServiceOrderAttachmentController::class, 'view'])
+            ->whereNumber('serviceOrder')
+            ->whereNumber('attachment')
+            ->name('orders.attachments.view');
+
+        Route::delete('/ordenes/{serviceOrder}/archivos/{attachment}', [ServiceOrderAttachmentController::class, 'destroy'])
+            ->whereNumber('serviceOrder')
+            ->whereNumber('attachment')
+            ->name('orders.attachments.destroy');
+
+    });
+
+    Route::middleware('role:cliente')->group(function () {
+        Route::get('/mis-ordenes', [ClientPortalController::class, 'index'])
+            ->name('client.orders.index');
+
+        Route::get('/mis-ordenes/{serviceOrder}', [ClientPortalController::class, 'show'])
+            ->whereNumber('serviceOrder')
+            ->name('client.orders.show');
+
+        Route::post('/mis-ordenes/{serviceOrder}/archivos', [ServiceOrderAttachmentController::class, 'store'])
+            ->whereNumber('serviceOrder')
+            ->name('client.orders.attachments.store');
+
+        Route::get('/mis-ordenes/{serviceOrder}/archivos/{attachment}', [ServiceOrderAttachmentController::class, 'view'])
+            ->whereNumber('serviceOrder')
+            ->whereNumber('attachment')
+            ->name('client.orders.attachments.view');
     });
 });
 

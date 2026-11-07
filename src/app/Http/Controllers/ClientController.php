@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Models\Client;
+use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ class ClientController extends Controller
 
         $clients = Client::query()
             ->withCount(['equipments', 'serviceOrders'])
+            ->with('user')
             ->when($search !== '', function ($query) use ($search): void {
                 $query->where(function ($clients) use ($search): void {
                     $clients
@@ -35,7 +37,9 @@ class ClientController extends Controller
 
     public function create(): View
     {
-        return view('clients.create');
+        return view('clients.create', [
+            'clientUsers' => $this->clientUsers(),
+        ]);
     }
 
     public function store(StoreClientRequest $request): RedirectResponse
@@ -50,7 +54,10 @@ class ClientController extends Controller
 
     public function edit(Client $client): View
     {
-        return view('clients.edit', compact('client'));
+        return view('clients.edit', [
+            'client' => $client,
+            'clientUsers' => $this->clientUsers($client),
+        ]);
     }
 
     public function update(UpdateClientRequest $request, Client $client): RedirectResponse
@@ -74,5 +81,20 @@ class ClientController extends Controller
         }
 
         return redirect()->route('clients.index')->with('success', "El cliente {$code} fue eliminado.");
+    }
+
+    private function clientUsers(?Client $currentClient = null)
+    {
+        return User::query()
+            ->where('role', 'cliente')
+            ->where(function ($query) use ($currentClient): void {
+                $query->whereDoesntHave('client');
+
+                if ($currentClient) {
+                    $query->orWhereHas('client', fn ($clients) => $clients->whereKey($currentClient->id));
+                }
+            })
+            ->orderBy('name')
+            ->get();
     }
 }

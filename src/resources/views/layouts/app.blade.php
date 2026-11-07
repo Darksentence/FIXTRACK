@@ -148,6 +148,9 @@
         Reportes
     </a>
 @endif
+                @if(auth()->user()->tieneRol(\App\Enums\Rol::Cliente))
+                    <a class="{{ request()->routeIs('client.orders.*') ? 'is-active' : '' }}" href="{{ route('client.orders.index') }}">Mis órdenes</a>
+                @endif
             </nav>
             <div class="user-area">
                 <span>{{ auth()->user()->name }}</span>

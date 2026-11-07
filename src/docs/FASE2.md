@@ -50,7 +50,13 @@ Todos usan la contraseña `Fixtrack123*`:
 | Técnico | `tecnico@fixtrack.test` |
 | Cliente | `cliente@fixtrack.test` |
 
-El CRUD de órdenes está restringido a administradores y técnicos para evitar que un cliente vea información de otros clientes. El portal de consulta individual de clientes queda como siguiente incremento.
+El CRUD de órdenes está restringido a administradores y técnicos para evitar que un cliente vea información de otros clientes. El portal de consulta individual se implementa en la Parte 2 de la Fase 3.
+
+## Portal del cliente y archivos
+
+La cuenta de un cliente puede vincularse desde el CRUD de clientes. Una vez vinculada, el usuario con rol `cliente` puede consultar sus órdenes en `/mis-ordenes`, revisar estados, diagnóstico, reparación y archivos asociados.
+
+Los archivos se almacenan en el disco privado de Laravel. Se aceptan imágenes JPG, JPEG, PNG, WEBP y documentos PDF de hasta 10 MB. El acceso a cada archivo se valida contra la orden y el cliente autenticado.
 
 ## Verificar
 
