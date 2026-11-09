@@ -49,6 +49,47 @@ class ServiceOrderCrudTest extends TestCase
             ->assertSee($order->order_code);
     }
 
+    public function test_no_permite_crear_orden_con_costo_estimado_negativo(): void
+    {
+        $technician = User::factory()->tecnico()->create();
+        [$client, $equipment] = $this->clientWithEquipment();
+
+        $this->actingAs($technician)
+            ->from(route('orders.create'))
+            ->post(route('orders.store'), [
+                'client_id' => $client->id,
+                'equipment_id' => $equipment->id,
+                'service_type' => 'repair',
+                'priority' => 'medium',
+                'reported_problem' => 'La consola no enciende.',
+                'estimated_cost' => '-10.00',
+            ])
+            ->assertRedirect(route('orders.create'))
+            ->assertSessionHasErrors('estimated_cost');
+
+        $this->assertDatabaseCount('service_orders', 0);
+    }
+
+    public function test_no_permite_crear_orden_con_descripcion_insuficiente(): void
+    {
+        $technician = User::factory()->tecnico()->create();
+        [$client, $equipment] = $this->clientWithEquipment();
+
+        $this->actingAs($technician)
+            ->from(route('orders.create'))
+            ->post(route('orders.store'), [
+                'client_id' => $client->id,
+                'equipment_id' => $equipment->id,
+                'service_type' => 'repair',
+                'priority' => 'medium',
+                'reported_problem' => 'Mal',
+            ])
+            ->assertRedirect(route('orders.create'))
+            ->assertSessionHasErrors('reported_problem');
+
+        $this->assertDatabaseCount('service_orders', 0);
+    }
+
     public function test_no_se_puede_asociar_un_equipo_a_otro_cliente(): void
     {
         $technician = User::factory()->tecnico()->create();

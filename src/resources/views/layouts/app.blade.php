@@ -56,8 +56,12 @@
         .card-body { padding: 1.1rem; }
         .flash { margin-bottom: 1rem; padding: .75rem .9rem; border-radius: 3px; color: #31553b; background: #e6ece2; border-left: 3px solid #64805c; }
         .errors { margin-bottom: 1rem; padding: .75rem 1rem .75rem 2rem; color: #832c24; background: #f4e4df; border-left: 3px solid var(--danger); }
+        .warning { margin-bottom: 1rem; padding: .75rem .9rem; color: #76531d; background: #f5edda; border-left: 3px solid #b58a37; }
         .filters { padding: .85rem 1rem; display: grid; grid-template-columns: minmax(210px, 2fr) repeat(2, minmax(160px, 1fr)) auto auto; gap: .6rem; align-items: end; border-bottom: 1px solid var(--line); background: #f7f5ef; }
         .field { display: grid; gap: .35rem; }
+        .field-error { margin: .05rem 0 0; color: var(--danger); font-size: .8rem; line-height: 1.35; }
+        input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: var(--danger); }
+        input[aria-invalid="true"]:focus, select[aria-invalid="true"]:focus, textarea[aria-invalid="true"]:focus { box-shadow: 0 0 0 2px rgba(163, 52, 44, .12); }
         label { color: #404844; font-size: .82rem; font-weight: 650; }
         input, select, textarea { width: 100%; color: var(--ink); background: #fffefa; border: 1px solid #c9c6bc; border-radius: 3px; padding: .64rem .7rem; outline: none; }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(184, 77, 45, .12); }
@@ -155,6 +159,10 @@
 
         @if(session('error'))
             <div class="errors" role="alert">{{ session('error') }}</div>
+        @endif
+
+        @if(session('warning'))
+            <div class="warning" role="status">{{ session('warning') }}</div>
         @endif
 
         @if($errors->any())

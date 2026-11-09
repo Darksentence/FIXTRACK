@@ -72,6 +72,51 @@ class ClientEquipmentCrudTest extends TestCase
             ->assertSee('Nintendo Switch');
     }
 
+    public function test_no_permite_registrar_cliente_con_telefono_invalido(): void
+    {
+        $technician = User::factory()->tecnico()->create();
+
+        $this->actingAs($technician)
+            ->from(route('clients.create'))
+            ->post(route('clients.store'), [
+                'client_code' => 'C-BAD-PHONE',
+                'name' => 'Cliente inválido',
+                'phone' => 'telefono123',
+                'email' => 'valido@fixtrack.test',
+            ])
+            ->assertRedirect(route('clients.create'))
+            ->assertSessionHasErrors('phone');
+
+        $this->assertDatabaseMissing('clients', ['client_code' => 'C-BAD-PHONE']);
+    }
+
+    public function test_no_permite_registrar_cliente_con_nombre_demasiado_corto(): void
+    {
+        $technician = User::factory()->tecnico()->create();
+
+        $this->actingAs($technician)
+            ->from(route('clients.create'))
+            ->post(route('clients.store'), [
+                'client_code' => 'C-SHORT',
+                'name' => 'A',
+                'phone' => '7000-0100',
+            ])
+            ->assertRedirect(route('clients.create'))
+            ->assertSessionHasErrors('name');
+
+        $this->assertDatabaseMissing('clients', ['client_code' => 'C-SHORT']);
+    }
+
+    public function test_muestra_una_pagina_controlada_para_recursos_inexistentes(): void
+    {
+        $technician = User::factory()->tecnico()->create();
+
+        $this->actingAs($technician)
+            ->get('/ruta-que-no-existe-en-fixtrack')
+            ->assertNotFound()
+            ->assertSee('Página no encontrada');
+    }
+
     public function test_un_cliente_no_puede_gestionar_catalogos(): void
     {
         $client = User::factory()->cliente()->create();

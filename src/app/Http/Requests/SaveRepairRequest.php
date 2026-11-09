@@ -15,7 +15,7 @@ class SaveRepairRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'performed_work' => ['required', 'string', 'max:5000'],
+            'performed_work' => ['required', 'string', 'min:5', 'max:5000'],
             'parts_used' => ['nullable', 'string', 'max:5000'],
             'observations' => ['nullable', 'string', 'max:5000'],
             'started_at' => ['nullable', 'date'],
@@ -27,9 +27,12 @@ class SaveRepairRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'performed_work.required' => 'Describe el trabajo realizado.',
+            'performed_work.min' => 'La descripción del trabajo debe contener al menos 5 caracteres.',
             'final_cost.numeric' => 'El costo final debe ser numérico.',
             'final_cost.min' => 'El costo final no puede ser negativo.',
             'final_cost.max' => 'El costo final supera el monto permitido.',
+            'completed_at.after_or_equal' => 'La fecha de finalización no puede ser anterior a la fecha de inicio.',
         ];
     }
 }

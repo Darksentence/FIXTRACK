@@ -43,9 +43,11 @@
                     <form method="POST" action="{{ route('orders.diagnosis', $order) }}">
                         @csrf
                         <h3 style="margin: 0 0 .8rem;">{{ $order->diagnosis ? 'Editar diagnóstico' : 'Registrar diagnóstico' }}</h3>
-                        <div class="field"><label for="diagnosis">Diagnóstico *</label><textarea id="diagnosis" name="diagnosis" required>{{ old('diagnosis', $order->diagnosis?->diagnosis ?? '') }}</textarea></div>
+                        <div class="field"><label for="diagnosis">Diagnóstico *</label><textarea id="diagnosis" name="diagnosis" required minlength="5" aria-invalid="{{ $errors->has('diagnosis') ? 'true' : 'false' }}">{{ old('diagnosis', $order->diagnosis?->diagnosis ?? '') }}</textarea>
+                            @include('partials.field-error', ['field' => 'diagnosis'])</div>
                         <div class="form-grid" style="margin-top: .8rem;">
-                            <div class="field"><label for="proposed_solution">Solución propuesta</label><textarea id="proposed_solution" name="proposed_solution" style="min-height: 90px;">{{ old('proposed_solution', $order->diagnosis?->proposed_solution ?? '') }}</textarea></div>
+                            <div class="field"><label for="proposed_solution">Solución propuesta</label><textarea id="proposed_solution" name="proposed_solution" style="min-height: 90px;" aria-invalid="{{ $errors->has('proposed_solution') ? 'true' : 'false' }}">{{ old('proposed_solution', $order->diagnosis?->proposed_solution ?? '') }}</textarea>
+                                @include('partials.field-error', ['field' => 'proposed_solution'])</div>
                             <div class="field"><label for="diagnosis_observations">Observaciones</label><textarea id="diagnosis_observations" name="observations" style="min-height: 90px;">{{ old('observations', $order->diagnosis?->observations ?? '') }}</textarea></div>
                         </div>
                         <button class="button-primary" style="margin-top: .8rem;" type="submit">Guardar diagnóstico</button>
@@ -56,13 +58,15 @@
                     <form method="POST" action="{{ route('orders.repair', $order) }}">
                         @csrf
                         <h3 style="margin: 0 0 .8rem;">{{ $order->repair ? 'Editar reparación' : 'Registrar reparación' }}</h3>
-                        <div class="field"><label for="performed_work">Trabajo realizado *</label><textarea id="performed_work" name="performed_work" required>{{ old('performed_work', $order->repair?->performed_work ?? '') }}</textarea></div>
+                        <div class="field"><label for="performed_work">Trabajo realizado *</label><textarea id="performed_work" name="performed_work" required minlength="5" aria-invalid="{{ $errors->has('performed_work') ? 'true' : 'false' }}">{{ old('performed_work', $order->repair?->performed_work ?? '') }}</textarea>
+                            @include('partials.field-error', ['field' => 'performed_work'])</div>
                         <div class="form-grid" style="margin-top: .8rem;">
                             <div class="field"><label for="parts_used">Repuestos utilizados</label><textarea id="parts_used" name="parts_used" style="min-height: 90px;">{{ old('parts_used', $order->repair?->parts_used ?? '') }}</textarea></div>
                             <div class="field"><label for="repair_observations">Observaciones</label><textarea id="repair_observations" name="observations" style="min-height: 90px;">{{ old('observations', $order->repair?->observations ?? '') }}</textarea></div>
                             <div class="field"><label for="started_at">Inicio</label><input id="started_at" type="datetime-local" name="started_at" value="{{ old('started_at', $order->repair?->started_at?->format('Y-m-d\\TH:i') ?? '') }}"></div>
                             <div class="field"><label for="completed_at">Finalización</label><input id="completed_at" type="datetime-local" name="completed_at" value="{{ old('completed_at', $order->repair?->completed_at?->format('Y-m-d\\TH:i') ?? '') }}"></div>
-                            <div class="field"><label for="final_cost">Costo final del servicio</label><input id="final_cost" type="number" name="final_cost" min="0" max="99999999.99" step="0.01" value="{{ old('final_cost', $order->final_cost ?? '') }}" placeholder="Se define al terminar el trabajo"></div>
+                            <div class="field"><label for="final_cost">Costo final del servicio</label><input id="final_cost" type="number" name="final_cost" min="0" max="99999999.99" step="0.01" value="{{ old('final_cost', $order->final_cost ?? '') }}" placeholder="Se define al terminar el trabajo" aria-invalid="{{ $errors->has('final_cost') ? 'true' : 'false' }}">
+                                @include('partials.field-error', ['field' => 'final_cost'])</div>
                         </div>
                         <button class="button-primary" style="margin-top: .8rem;" type="submit">Guardar reparación</button>
                     </form>

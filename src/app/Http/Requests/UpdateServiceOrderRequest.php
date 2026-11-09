@@ -25,7 +25,7 @@ class UpdateServiceOrderRequest extends FormRequest
                     ->where(fn ($query) => $query->where('client_id', $this->input('client_id'))),
             ],
             'service_type' => ['required', Rule::in(['repair', 'maintenance'])],
-            'reported_problem' => ['required', 'string', 'max:5000'],
+            'reported_problem' => ['required', 'string', 'min:5', 'max:5000'],
             'priority' => ['required', Rule::in(array_column(PrioridadTicket::cases(), 'value'))],
             'estimated_cost' => ['nullable', 'numeric', 'min:0', 'max:99999999.99'],
         ];
