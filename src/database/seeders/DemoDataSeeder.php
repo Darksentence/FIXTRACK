@@ -28,6 +28,12 @@ class DemoDataSeeder extends Seeder
             ],
         );
 
+        $clientUser = User::query()->where('email', 'cliente@fixtrack.test')->first();
+
+        if ($clientUser) {
+            $client->forceFill(['user_id' => $clientUser->id])->save();
+        }
+
         $equipment = Equipment::firstOrCreate(
             [
                 'client_id' => $client->id,

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Client extends Model
@@ -11,6 +12,7 @@ class Client extends Model
 
     protected $fillable = [
         'client_code',
+        'user_id',
         'name',
         'phone',
         'email',
@@ -32,5 +34,11 @@ class Client extends Model
     public function serviceOrders(): HasMany
     {
         return $this->hasMany(ServiceOrder::class);
+    }
+
+    // Una cuenta de acceso puede estar vinculada a un único cliente.
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }
