@@ -138,8 +138,11 @@
                 <span class="brand-mark" aria-hidden="true">FT</span>
                 <span class="brand-name">FIXTRACK<small>Servicio técnico</small></span>
             </a>
+
             <nav class="nav" aria-label="Navegación principal">
                 <a class="{{ request()->routeIs('panel') ? 'is-active' : '' }}" href="{{ route('panel') }}">Panel</a>
+
+                {{-- Navegación de Administrador y Técnico. --}}
                 @if(auth()->user()->tieneRol(\App\Enums\Rol::Admin, \App\Enums\Rol::Tecnico))
                     <a class="{{ request()->routeIs('clients.*') ? 'is-active' : '' }}" href="{{ route('clients.index') }}">Clientes</a>
                     <a class="{{ request()->routeIs('equipments.*') ? 'is-active' : '' }}" href="{{ route('equipments.index') }}">Equipos</a>
@@ -155,9 +158,20 @@
                 @if(auth()->user()->tieneRol(\App\Enums\Rol::Cliente))
                     <a class="{{ request()->routeIs('client.orders.*') ? 'is-active' : '' }}" href="{{ route('client.orders.index') }}">Mis órdenes</a>
                 @endif
+
+                {{-- FASE 3 - PARTE 5: Integración de reportes y estadísticas.
+                     Conservamos el portal del cliente de la Parte 2
+                     y agregamos el acceso a reportes de Eduardo.
+                     Este enlace solo aparece para Administradores.
+                     La ruta reports.index debe existir en routes/web.php. --}}
+                @if(auth()->user()->tieneRol(\App\Enums\Rol::Admin))
+                    <a class="{{ request()->routeIs('reports.*') ? 'is-active' : '' }}" href="{{ route('reports.index') }}">Reportes</a>
+                @endif
             </nav>
+
             <div class="user-area">
                 <span>{{ auth()->user()->name }}</span>
+
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button class="logout" type="submit">Salir</button>

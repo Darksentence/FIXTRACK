@@ -1,9 +1,11 @@
+
 <?php
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ClientPortalController;
 use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ServiceOrderAttachmentController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
@@ -19,7 +21,9 @@ use Illuminate\Support\Facades\Route;
 | Se integran las rutas del portal del cliente y de los archivos
 | adjuntos desarrolladas por Z.
 |
-| El módulo de reportes de Eduardo se integrará por separado.
+| FASE 3 - PARTE 5:
+| Se incorporan las rutas de reportes y estadísticas desarrolladas
+| por Eduardo, manteniendo el acceso exclusivo para administradores.
 |--------------------------------------------------------------------------
 */
 
@@ -29,7 +33,9 @@ Route::get('/', function () {
 
 // Autenticación (solo invitados)
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+
+    Route::get('/login', [AuthController::class, 'showLogin'])
+        ->name('login');
 
     Route::post('/login', [AuthController::class, 'login'])
         ->middleware('throttle:login')
@@ -38,9 +44,45 @@ Route::middleware('guest')->group(function () {
 
 // Rutas que requieren sesión iniciada
 Route::middleware('auth')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::view('/panel', 'panel')->name('panel');
+    Route::post('/logout', [AuthController::class, 'logout'])
+        ->name('logout');
+
+    Route::view('/panel', 'panel')
+        ->name('panel');
+
+    /*
+    |--------------------------------------------------------------------------
+    | FASE 3 - PARTE 5: REPORTES Y ESTADÍSTICAS
+    |--------------------------------------------------------------------------
+    | Módulo desarrollado por Eduardo.
+    | Acceso exclusivo para administradores.
+    | Incluye dashboard, estadísticas y exportaciones PDF y Excel.
+    |
+    | Estas rutas se integran sin modificar los módulos operativos
+    | ni las rutas del portal del cliente.
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('role:admin')->group(function () {
+
+        // Dashboard de reportes
+        Route::get('/reportes', function () {
+            return view('reports.index');
+        })->name('reports.index');
+
+        // Datos estadísticos en formato JSON
+        Route::get('/reportes/resumen', [ReportController::class, 'summary'])
+            ->name('reports.summary');
+
+        // Exportación de reporte en PDF
+        Route::get('/reportes/pdf', [ReportController::class, 'exportPdf'])
+            ->name('reports.pdf');
+
+        // Exportación de órdenes de servicio en Excel
+        Route::get('/reportes/excel', [ReportController::class, 'exportExcel'])
+            ->name('reports.excel');
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -48,18 +90,23 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     | Se conservan las rutas originales para gestionar clientes,
     | equipos y órdenes de servicio.
+    |
+    | Las órdenes contienen información operativa y solo las
+    | gestionan usuarios con rol Administrador o Técnico.
     |--------------------------------------------------------------------------
     */
 
-    // Las órdenes contienen información operativa y solo las gestionan admin/técnico.
     Route::middleware('role:admin,tecnico')->group(function () {
 
-        // Clientes
-        Route::get('/clientes', [ClientController::class, 'index'])->name('clients.index');
+        // CLIENTES
+        Route::get('/clientes', [ClientController::class, 'index'])
+            ->name('clients.index');
 
-        Route::get('/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
+        Route::get('/clientes/crear', [ClientController::class, 'create'])
+            ->name('clients.create');
 
-        Route::post('/clientes', [ClientController::class, 'store'])->name('clients.store');
+        Route::post('/clientes', [ClientController::class, 'store'])
+            ->name('clients.store');
 
         Route::get('/clientes/{client}/editar', [ClientController::class, 'edit'])
             ->whereNumber('client')
@@ -73,12 +120,15 @@ Route::middleware('auth')->group(function () {
             ->whereNumber('client')
             ->name('clients.destroy');
 
-        // Equipos
-        Route::get('/equipos', [EquipmentController::class, 'index'])->name('equipments.index');
+        // EQUIPOS
+        Route::get('/equipos', [EquipmentController::class, 'index'])
+            ->name('equipments.index');
 
-        Route::get('/equipos/crear', [EquipmentController::class, 'create'])->name('equipments.create');
+        Route::get('/equipos/crear', [EquipmentController::class, 'create'])
+            ->name('equipments.create');
 
-        Route::post('/equipos', [EquipmentController::class, 'store'])->name('equipments.store');
+        Route::post('/equipos', [EquipmentController::class, 'store'])
+            ->name('equipments.store');
 
         Route::get('/equipos/{equipment}/editar', [EquipmentController::class, 'edit'])
             ->whereNumber('equipment')
@@ -92,12 +142,15 @@ Route::middleware('auth')->group(function () {
             ->whereNumber('equipment')
             ->name('equipments.destroy');
 
-        // Órdenes de servicio
-        Route::get('/ordenes', [TicketController::class, 'index'])->name('orders.index');
+        // ÓRDENES DE SERVICIO
+        Route::get('/ordenes', [TicketController::class, 'index'])
+            ->name('orders.index');
 
-        Route::get('/ordenes/crear', [TicketController::class, 'create'])->name('orders.create');
+        Route::get('/ordenes/crear', [TicketController::class, 'create'])
+            ->name('orders.create');
 
-        Route::post('/ordenes', [TicketController::class, 'store'])->name('orders.store');
+        Route::post('/ordenes', [TicketController::class, 'store'])
+            ->name('orders.store');
 
         Route::get('/ordenes/{serviceOrder}', [TicketController::class, 'show'])
             ->whereNumber('serviceOrder')
