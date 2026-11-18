@@ -70,4 +70,9 @@ class ServiceOrder extends Model
     {
         return $this->hasMany(OrderHistory::class);
     }
+
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(ServiceOrderAttachment::class)->latest('created_at');
+    }
 }

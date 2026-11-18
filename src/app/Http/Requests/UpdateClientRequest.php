@@ -24,6 +24,16 @@ class UpdateClientRequest extends FormRequest
                 'max:30',
                 Rule::unique('clients', 'client_code')->ignore($client),
             ],
+
+            // FASE 3 - PARTE 2: conservar la vinculación de cuentas de clientes.
+            'user_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('users', 'id')->where(fn ($query) => $query->where('role', Rol::Cliente->value)),
+                Rule::unique('clients', 'user_id')->ignore($client),
+            ],
+
+            // FASE 3 - PARTE 4: conservar las validaciones de nombre y teléfono.
             'name' => ['required', 'string', 'min:2', 'max:150'],
             'phone' => ['required', 'string', 'max:30', 'regex:/^(?=(?:\D*\d){8})\+?[0-9][0-9\s().-]{6,28}[0-9]$/'],
             'email' => ['nullable', 'email', 'max:150'],

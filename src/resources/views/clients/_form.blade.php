@@ -19,6 +19,18 @@
         <input id="email" type="email" name="email" value="{{ old('email', $client->email ?? '') }}" maxlength="150" aria-invalid="{{ $errors->has('email') ? 'true' : 'false' }}">
         @include('partials.field-error', ['field' => 'email'])
     </div>
+    <div class="field">
+        <label for="user_id">Cuenta de acceso del cliente</label>
+        <select id="user_id" name="user_id">
+            <option value="">Sin cuenta vinculada</option>
+            @foreach($clientUsers as $clientUser)
+                <option value="{{ $clientUser->id }}" @selected((string) old('user_id', $client->user_id ?? '') === (string) $clientUser->id)>
+                    {{ $clientUser->name }} · {{ $clientUser->email }}
+                </option>
+            @endforeach
+        </select>
+        <small class="muted">La cuenta podrá consultar únicamente las órdenes de este cliente.</small>
+    </div>
     <div class="field full">
         <label for="address">Dirección</label>
         <textarea id="address" name="address" maxlength="500" style="min-height: 90px;" aria-invalid="{{ $errors->has('address') ? 'true' : 'false' }}">{{ old('address', $client->address ?? '') }}</textarea>
