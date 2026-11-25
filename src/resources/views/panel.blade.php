@@ -28,7 +28,7 @@
                 @if(auth()->user()->tieneRol(\App\Enums\Rol::Admin, \App\Enums\Rol::Tecnico))
                     <a class="button button-secondary" href="{{ route('orders.create') }}">Registrar una orden</a>
                 @else
-                    <p class="note">El acceso para clientes aún no está disponible. Estamos trabajando para habilitarlo.</p>
+                    <a class="button button-secondary" href="{{ route('client.orders.index') }}">Consultar mis órdenes</a>
                 @endif
             </div>
         </section>
@@ -56,5 +56,15 @@
                 <div class="card-body"><p class="muted">Asocia laptops, consolas y periféricos a sus clientes antes de crear una orden.</p></div>
             </section>
         </div>
+    @endif
+
+    @if(auth()->user()->tieneRol(\App\Enums\Rol::Cliente))
+        <section class="card" style="margin-top: 1rem;">
+            <div class="card-header"><h2>Seguimiento de tus equipos</h2></div>
+            <div class="card-body">
+                <p class="muted">Consulta el estado, diagnóstico y archivos de tus órdenes de servicio.</p>
+                <a class="button button-primary" href="{{ route('client.orders.index') }}">Abrir portal del cliente</a>
+            </div>
+        </section>
     @endif
 @endsection

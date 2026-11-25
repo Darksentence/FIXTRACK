@@ -24,13 +24,14 @@
 
         <div class="table-wrap">
             <table style="min-width: 700px;">
-                <thead><tr><th>Código</th><th>Nombre</th><th>Contacto</th><th>Registros</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <thead><tr><th>Código</th><th>Nombre</th><th>Contacto</th><th>Cuenta</th><th>Registros</th><th>Estado</th><th>Acciones</th></tr></thead>
                 <tbody>
                     @forelse($clients as $client)
                         <tr>
                             <td class="code">{{ $client->client_code }}</td>
                             <td>{{ $client->name }}</td>
                             <td>{{ $client->phone }}<br><small class="muted">{{ $client->email ?: 'Sin correo' }}</small></td>
+                            <td>{{ $client->user?->email ?: 'Sin cuenta' }}</td>
                             <td>{{ $client->equipments_count }} equipo(s)<br><small class="muted">{{ $client->service_orders_count }} orden(es)</small></td>
                             <td><span class="badge badge-{{ $client->active ? 'green' : 'slate' }}">{{ $client->active ? 'Activo' : 'Inactivo' }}</span></td>
                             <td>
@@ -45,7 +46,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td class="empty" colspan="6">No hay clientes registrados.</td></tr>
+                        <tr><td class="empty" colspan="7">No hay clientes registrados.</td></tr>
                     @endforelse
                 </tbody>
             </table>

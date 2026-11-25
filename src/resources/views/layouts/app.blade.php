@@ -47,7 +47,7 @@
         .container { max-width: 1180px; margin: 0 auto; padding: 1.8rem 1.25rem 3rem; }
         .page-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 1.15rem; padding-bottom: .95rem; border-bottom: 1px solid #d0ccc1; }
         h1 { margin: 0; font-size: clamp(1.6rem, 3vw, 2.05rem); font-weight: 700; letter-spacing: -.045em; }
-        h2 { margin: 0; font-size: 1.15rem; font-weight: 700; letter-spacing: -.02em; }
+        h2 { margin: 0; font-size: 1.15rem; font-weight: 700; }
         h3 { font-size: 1rem; font-weight: 700; }
         .eyebrow { margin: 0 0 .35rem; color: var(--primary); font-size: .72rem; font-weight: 700; letter-spacing: .045em; text-transform: none; }
         .muted { color: var(--muted); }
@@ -86,7 +86,7 @@
         .pagination-links { display: flex; gap: .4rem; }
         .detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
         .detail { padding: .85rem; background: var(--soft); border-left: 2px solid #c8c1b2; }
-        .detail dt { color: var(--muted); font-size: .72rem; font-weight: 700; text-transform: none; letter-spacing: .01em; }
+        .detail dt { color: var(--muted); font-size: .72rem; font-weight: 700; text-transform: none; }
         .detail dd { margin: .3rem 0 0; font-weight: 600; overflow-wrap: anywhere; }
         .two-columns { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr); gap: .85rem; align-items: start; }
         .stack { display: grid; gap: 1rem; }
@@ -125,6 +125,11 @@
             .filters { padding: .75rem; }
         }
     </style>
+
+    {{-- FASE 3 - PARTE 1: Integración de estilos complementarios.
+         Conservamos los estilos y la estructura creados por el equipo.
+         Este archivo CSS mejora la navegación adaptable y la accesibilidad. --}}
+    <link rel="stylesheet" href="{{ asset('css/fase3-integracion.css') }}">
 </head>
 <body>
     <header class="topbar">
@@ -133,17 +138,40 @@
                 <span class="brand-mark" aria-hidden="true">FT</span>
                 <span class="brand-name">FIXTRACK<small>Servicio técnico</small></span>
             </a>
+
             <nav class="nav" aria-label="Navegación principal">
                 <a class="{{ request()->routeIs('panel') ? 'is-active' : '' }}" href="{{ route('panel') }}">Panel</a>
+
+                {{-- Navegación de Administrador y Técnico. --}}
                 @if(auth()->user()->tieneRol(\App\Enums\Rol::Admin, \App\Enums\Rol::Tecnico))
                     <a class="{{ request()->routeIs('clients.*') ? 'is-active' : '' }}" href="{{ route('clients.index') }}">Clientes</a>
                     <a class="{{ request()->routeIs('equipments.*') ? 'is-active' : '' }}" href="{{ route('equipments.index') }}">Equipos</a>
                     <a class="{{ request()->routeIs('orders.*') && !request()->routeIs('orders.create') ? 'is-active' : '' }}" href="{{ route('orders.index') }}">Órdenes</a>
                     <a class="{{ request()->routeIs('orders.create') ? 'is-active' : '' }}" href="{{ route('orders.create') }}">Nueva orden</a>
                 @endif
+
+                {{-- FASE 3 - PARTE 2: Integración del portal del cliente.
+                     El enlace se muestra únicamente a usuarios con rol Cliente.
+                     Permite acceder a sus órdenes sin alterar la navegación
+                     existente para Administrador y Técnico.
+                     La ruta client.orders.index se define en routes/web.php. --}}
+                @if(auth()->user()->tieneRol(\App\Enums\Rol::Cliente))
+                    <a class="{{ request()->routeIs('client.orders.*') ? 'is-active' : '' }}" href="{{ route('client.orders.index') }}">Mis órdenes</a>
+                @endif
+
+                {{-- FASE 3 - PARTE 5: Integración de reportes y estadísticas.
+                     Conservamos el portal del cliente de la Parte 2
+                     y agregamos el acceso a reportes de Eduardo.
+                     Este enlace solo aparece para Administradores.
+                     La ruta reports.index debe existir en routes/web.php. --}}
+                @if(auth()->user()->tieneRol(\App\Enums\Rol::Admin))
+                    <a class="{{ request()->routeIs('reports.*') ? 'is-active' : '' }}" href="{{ route('reports.index') }}">Reportes</a>
+                @endif
             </nav>
+
             <div class="user-area">
                 <span>{{ auth()->user()->name }}</span>
+
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button class="logout" type="submit">Salir</button>
